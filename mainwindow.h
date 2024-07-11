@@ -10,9 +10,9 @@
 #include <QPropertyAnimation>
 #include <QTimer>
 #include <QMainWindow>
-
+#include <QDebug>
 //#include "playlist.h"
-//#include "title.h"
+#include "title.h"
 //#include "settingwid.h"
 
 
@@ -64,16 +64,19 @@ private:
     QTimer stCtrlBarHideTimer;
 
 //    Playlist m_stPlaylist;
-//    Title m_stTitle;
+    Title m_stTitle;
 
     bool m_bMoveDrag;//移动窗口标志
     QPoint m_DragPosition;
 
-//    About m_stAboutWidget;
+    About m_stAboutWidget;
 //    SettingWid m_stSettingWid;
 
     QMenu m_stMenu;
     QAction m_stActFullscreen;
     QMap<QString, void(MainWindow::*)()> map_act_;
+
 };
+
+
 #endif // MAINWINDOW_H

@@ -4,9 +4,10 @@
 const int FULLSCREEN_MOUSE_DETECT_TIME = 500;
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow),
-      m_nShadowWidth(0)
+    : QMainWindow(parent),
+      ui(new Ui::MainWindow),
+     m_nShadowWidth(0),
+    m_stTitle(this)
 
 {
     ui->setupUi(this);
@@ -47,17 +48,76 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_bFullScreenPlay = false;
 
+
     m_stCtrlBarAnimationTimer.setInterval(2000);
     m_stFullscreenMouseDetectTimer.setInterval(FULLSCREEN_MOUSE_DETECT_TIME);
 
 }
+
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
+bool MainWindow::Init()
+{
+//    QWidget *em = new QWidget(this);
+//    ui->PlaylistWid->setTitleBarWidget(em);
+//    ui->PlaylistWid->setWidget(&m_stPlaylist);
+//    //ui->PlaylistWid->setFixedWidth(100);
 
-bool MainWindow::Init(){
+//    QWidget *emTitle = new QWidget(this);
+//    ui->TitleWid->setTitleBarWidget(emTitle);
+//    ui->TitleWid->setWidget(&m_stTitle);
+
+//    //连接自定义信号与槽
+//    if (ConnectSignalSlots() == false)
+//    {
+//        return false;
+//    }
+
+//    if (ui->CtrlBarWid->Init() == false ||
+//        m_stPlaylist.Init() == false ||
+//        ui->ShowWid->Init() == false ||
+//        m_stTitle.Init() == false)
+//    {
+//        return false;
+//    }
+
+
+//    m_stCtrlbarAnimationShow = new QPropertyAnimation(ui->CtrlBarWid, "geometry");
+//    m_stCtrlbarAnimationHide = new QPropertyAnimation(ui->CtrlBarWid, "geometry");
+
+//    if (m_stAboutWidget.Init() == false)
+//    {
+//        return false;
+//    }
+
+//    //{
+//    //    QMenu* menu = AddMenuFun(tr("屏幕"), &m_stMenu);
+//    //    m_stActFullscreen.setText(tr("全屏"));
+//    //    m_stActFullscreen.setCheckable(true);
+//    //    menu->addAction(&m_stActFullscreen);
+//    //}
+//    //{
+//    //    QMenu* menu = AddMenuFun(tr("声音"), &m_stMenu);
+//    //    AddActionFun(tr("音量 +"), menu, &MainWid::SigAddVolume);
+//    //    AddActionFun(tr("音量 -"), menu, &MainWid::SigSubVolume);
+//    //}
+
+//    //{
+//    //    QMenu* menu = AddMenuFun(tr("打开"), &m_stMenu);
+//    //    AddActionFun(tr("打开文件"), menu, &MainWid::OpenFile);
+//    //}
+
+//    //AddActionFun(tr("关于"), &m_stMenu, &MainWid::OnShowAbout);
+//    //AddActionFun(tr("退出"), &m_stMenu, &MainWid::OnCloseBtnClicked);
+
+
+//    InitMenu();
+
+
     return true;
 }
+

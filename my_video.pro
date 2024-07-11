@@ -57,14 +57,20 @@ macx {
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    globalhelper.cpp
+    globalhelper.cpp \
+    title.cpp \
+    about.cpp \
 
 HEADERS += \
     mainwindow.h \
-    globalhelper.h
+    globalhelper.h \
+    title.h \
+    about.h \
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    title.ui \
+    about.ui \
 
 
 RESOURCES += mainwid.qrc

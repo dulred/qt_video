@@ -71,9 +71,9 @@ private:
     Ui::Title *ui;
 
     QString m_strMovieName;
-
-    QMenu m_stMenu;
     QActionGroup m_stActionGroup;
+    QMenu m_stMenu;
+
 
     About about;
 };
