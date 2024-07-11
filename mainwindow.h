@@ -11,7 +11,7 @@
 #include <QTimer>
 #include <QMainWindow>
 #include <QDebug>
-//#include "playlist.h"
+#include "playlist.h"
 #include "title.h"
 //#include "settingwid.h"
 
@@ -62,7 +62,7 @@ private:
     QTimer m_stFullscreenMouseDetectTimer;//全屏时鼠标位置监测时钟
     bool m_bFullscreenCtrlBarShow;
     QTimer stCtrlBarHideTimer;
-
+    QMenu m_stMenu;
 //    Playlist m_stPlaylist;
     Title m_stTitle;
 
@@ -72,7 +72,7 @@ private:
     About m_stAboutWidget;
 //    SettingWid m_stSettingWid;
 
-    QMenu m_stMenu;
+
     QAction m_stActFullscreen;
     QMap<QString, void(MainWindow::*)()> map_act_;
 
