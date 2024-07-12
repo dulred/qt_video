@@ -13,7 +13,6 @@ Playlist::Playlist(QWidget *parent) :
     ui(new Ui::Playlist)
 {
     ui->setupUi(this);
-	
 }
 
 Playlist::~Playlist()

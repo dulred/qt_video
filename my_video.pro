@@ -60,24 +60,24 @@ SOURCES += \
     globalhelper.cpp \
     title.cpp \
     about.cpp \
-#    playlist.cpp \
+    playlist.cpp \
 #    ctrlbar.cpp \
 #    show.cpp \
 #    videoctl.cpp \
 #    CustomSlider.cpp \
-#    medialist.cpp \
+    medialist.cpp \
 
 HEADERS += \
     mainwindow.h \
     globalhelper.h \
     title.h \
     about.h \
-#    playlist.h \
+    playlist.h \
 #    ctrlbar.h \
 #    show.h \
 #    videoctl.h \
 #    CustomSlider.h \
-#    medialist.h \
+    medialist.h \
 #    datactl.h \
 
 FORMS += \
