@@ -63,7 +63,7 @@ private:
     bool m_bFullscreenCtrlBarShow;
     QTimer stCtrlBarHideTimer;
     QMenu m_stMenu;
-//    Playlist m_stPlaylist;
+    Playlist m_stPlaylist;
     Title m_stTitle;
 
     bool m_bMoveDrag;//移动窗口标志

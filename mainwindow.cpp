@@ -1,6 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "globalhelper.h"
+#include <QSettings>
+#include <QDir>
+#include <QTextEdit>
+#include <QDockWidget>
+#include <QListWidget>
 const int FULLSCREEN_MOUSE_DETECT_TIME = 500;
 
 MainWindow::MainWindow(QWidget *parent)
@@ -8,13 +13,13 @@ MainWindow::MainWindow(QWidget *parent)
       ui(new Ui::MainWindow),
       m_nShadowWidth(0),
       m_stMenu(this),
-//      m_stPlaylist(this),
+      m_stPlaylist(this),
       m_stTitle(this),
       m_bMoveDrag(false),
       m_stActFullscreen(this)
 
 {
-//    ui->setupUi(this);
+    ui->setupUi(this);
 
     //无边框、无系统菜单、 任务栏点击最小化
 //    setWindowFlags(Qt::FramelessWindowHint /*| Qt::WindowSystemMenuHint*/ | Qt::WindowMinimizeButtonHint);
@@ -54,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     m_stCtrlBarAnimationTimer.setInterval(2000);
+
     m_stFullscreenMouseDetectTimer.setInterval(FULLSCREEN_MOUSE_DETECT_TIME);
 }
 
@@ -65,14 +71,14 @@ MainWindow::~MainWindow()
 
 bool MainWindow::Init()
 {
-//    QWidget *em = new QWidget(this);
-//    ui->PlaylistWid->setTitleBarWidget(em);
-//    ui->PlaylistWid->setWidget(&m_stPlaylist);
-//    ui->PlaylistWid->setFixedWidth(100);
+    QWidget *em = new QWidget(this);
+    ui->PlaylistWid->setTitleBarWidget(em);
+    ui->PlaylistWid->setWidget(&m_stPlaylist);
+    ui->PlaylistWid->setFixedWidth(100);
 
-//    QWidget *emTitle = new QWidget(this);
-//    ui->TitleWid->setTitleBarWidget(emTitle);
-//    ui->TitleWid->setWidget(&m_stTitle);
+    QWidget *emTitle = new QWidget(this);
+    ui->TitleWid->setTitleBarWidget(emTitle);
+    ui->TitleWid->setWidget(&m_stTitle);
 
 //    //连接自定义信号与槽
 //    if (ConnectSignalSlots() == false)

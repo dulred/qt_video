@@ -4,7 +4,7 @@
 #include <QFontDatabase>
 int main(int argc, char *argv[])
 {
-    qDebug() << "i am here ";
+    qDebug() << "what's up";
     QApplication a(argc, argv);
 
     //使用第三方字库，用来作为UI图片 ://res/fa-solid-900.ttf

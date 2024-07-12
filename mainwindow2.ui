@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWid</class>
- <widget class="QMainWindow" name="MainWid">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>848</width>
-    <height>551</height>
+    <width>800</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -84,7 +84,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>848</width>
+     <width>800</width>
      <height>26</height>
     </rect>
    </property>
