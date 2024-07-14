@@ -29,6 +29,40 @@ public:
     ~MainWindow();
     //初始化
     bool Init();
+private:
+    //连接信号槽
+    bool ConnectSignalSlots();
+
+    //关闭、最小化、最大化按钮响应
+    void OnCloseBtnClicked();
+    void OnMinBtnClicked();
+    void OnMaxBtnClicked();
+    //显示、隐藏播放列表
+//    void OnShowOrHidePlaylist();
+
+
+
+//    /**
+//    * @brief	全屏播放
+//    */
+//    void OnFullScreenPlay();
+
+//    void OnCtrlBarAnimationTimeOut();
+//    void OnFullscreenMouseDetectTimeOut();
+
+//    void OnCtrlBarHideTimeOut();
+    void OnShowMenu();
+//    void OnShowAbout();
+//    void OpenFile();
+
+//    void OnShowSettingWid();
+
+
+//    //添加菜单
+//    void InitMenu();
+//    void MenuJsonParser(QJsonObject& json_obj, QMenu* menu);
+//    QMenu* AddMenuFun(QString menu_title, QMenu* menu);
+//    void AddActionFun(QString action_title, QMenu* menu, void(MainWindow::* slot_addr)());
 
 signals:
     //最大化信号
@@ -75,7 +109,6 @@ private:
 
     QAction m_stActFullscreen;
     QMap<QString, void(MainWindow::*)()> map_act_;
-
 };
 
 

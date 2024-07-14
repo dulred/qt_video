@@ -7,7 +7,6 @@
 #include "globalhelper.h"
 
 
-
 Playlist::Playlist(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Playlist)

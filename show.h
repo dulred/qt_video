@@ -21,7 +21,7 @@
 #include <QActionGroup>
 #include <QAction>
 
-#include "videoctl.h"
+//#include "videoctl.h"
 
 namespace Ui {
 class Show;
@@ -46,21 +46,21 @@ protected:
 	 * @param	event 事件指针
 	 * @note 	
 	 */
-    void dropEvent(QDropEvent *event);
+    void dropEvent(QDropEvent *event) override;
 	/**
 	 * @brief	拖动事件
 	 *
 	 * @param	event 事件指针
 	 * @note
 	 */
-    void dragEnterEvent(QDragEnterEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event) override;
     /**
      * @brief	窗口大小变化事件
      * 
      * @param	event 事件指针
      * @note
      */
-    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *event) override;
 
     /**
      * @brief	按键事件
@@ -69,11 +69,17 @@ protected:
      * @return	
      * @note 	
      */
-    void keyReleaseEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event) override;
 
 
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
     //void contextMenuEvent(QContextMenuEvent* event);
+//    void mouseMoveEvent(QMouseEvent *event) override
+//      {
+//          // 打印鼠标位置
+//          qDebug() << "Mouse moved to: 666" << event->pos();
+
+//      }
 public:
     /**
     * @brief	播放

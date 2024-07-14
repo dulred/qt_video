@@ -10,7 +10,6 @@
 */
 
 
-
 #pragma once
 
 #ifdef _windows_
@@ -32,6 +31,7 @@
 #include <assert.h>
 
 #include "globalhelper.h"
+
 
 #define MAX_QUEUE_SIZE (15 * 1024 * 1024)
 #define MIN_FRAMES 25
@@ -269,8 +269,7 @@ typedef struct VideoState {
     SDL_cond *continue_read_thread;
 } VideoState;
 
-
-
+//int av_fifo_write(AVFifo *f, const void *buf, size_t nb_elems);
 
 //数据包队列存放数据包（供队列内部使用）
 static int packet_queue_put_private(PacketQueue *q, AVPacket *pkt)
@@ -285,7 +284,7 @@ static int packet_queue_put_private(PacketQueue *q, AVPacket *pkt)
     pkt1.pkt = pkt;
     pkt1.serial = q->serial;
 
-    ret = av_fifo_write(q->pkt_list, &pkt1, 1);
+//    ret = av_fifo_write(q->pkt_list, &pkt1, 1);
     if (ret < 0)
         return ret;
     q->nb_packets++;
@@ -296,397 +295,397 @@ static int packet_queue_put_private(PacketQueue *q, AVPacket *pkt)
     return 0;
 }
 
-//数据包队列存放数据包
-static int packet_queue_put(PacketQueue *q, AVPacket *pkt)
-{
-    AVPacket* pkt1;
-    int ret;
+////数据包队列存放数据包
+//static int packet_queue_put(PacketQueue *q, AVPacket *pkt)
+//{
+//    AVPacket* pkt1;
+//    int ret;
 
-    pkt1 = av_packet_alloc();
-    if (!pkt1) {
-        av_packet_unref(pkt);
-        return -1;
-    }
-    av_packet_move_ref(pkt1, pkt);
+//    pkt1 = av_packet_alloc();
+//    if (!pkt1) {
+//        av_packet_unref(pkt);
+//        return -1;
+//    }
+//    av_packet_move_ref(pkt1, pkt);
 
-    SDL_LockMutex(q->mutex);
-    ret = packet_queue_put_private(q, pkt1);
-    SDL_UnlockMutex(q->mutex);
+//    SDL_LockMutex(q->mutex);
+//    ret = packet_queue_put_private(q, pkt1);
+//    SDL_UnlockMutex(q->mutex);
 
-    if (ret < 0)
-        av_packet_free(&pkt1);
+//    if (ret < 0)
+//        av_packet_free(&pkt1);
 
-    return ret;
-}
+//    return ret;
+//}
 
-//数据包队列存放空数据包
-static int packet_queue_put_nullpacket(PacketQueue* q, AVPacket* pkt, int stream_index)
-{
-    pkt->stream_index = stream_index;
-    return packet_queue_put(q, pkt);
-}
+////数据包队列存放空数据包
+//static int packet_queue_put_nullpacket(PacketQueue* q, AVPacket* pkt, int stream_index)
+//{
+//    pkt->stream_index = stream_index;
+//    return packet_queue_put(q, pkt);
+//}
 
-/* packet queue handling */
-//数据包队列初始化
-static int packet_queue_init(PacketQueue *q)
-{
-    memset(q, 0, sizeof(PacketQueue));
-    q->pkt_list = av_fifo_alloc2(1, sizeof(MyAVPacketList), AV_FIFO_FLAG_AUTO_GROW);
-    if (!q->pkt_list)
-        return AVERROR(ENOMEM);
-    q->mutex = SDL_CreateMutex();
-    if (!q->mutex) {
-        av_log(NULL, AV_LOG_FATAL, "SDL_CreateMutex(): %s\n", SDL_GetError());
-        return AVERROR(ENOMEM);
-    }
-    q->cond = SDL_CreateCond();
-    if (!q->cond) {
-        av_log(NULL, AV_LOG_FATAL, "SDL_CreateCond(): %s\n", SDL_GetError());
-        return AVERROR(ENOMEM);
-    }
-    q->abort_request = 1;
-    return 0;
-}
-//数据包队列清空
-static void packet_queue_flush(PacketQueue *q)
-{
-    MyAVPacketList pkt1;
+///* packet queue handling */
+////数据包队列初始化
+//static int packet_queue_init(PacketQueue *q)
+//{
+//    memset(q, 0, sizeof(PacketQueue));
+//    q->pkt_list = av_fifo_alloc2(1, sizeof(MyAVPacketList), AV_FIFO_FLAG_AUTO_GROW);
+//    if (!q->pkt_list)
+//        return AVERROR(ENOMEM);
+//    q->mutex = SDL_CreateMutex();
+//    if (!q->mutex) {
+//        av_log(NULL, AV_LOG_FATAL, "SDL_CreateMutex(): %s\n", SDL_GetError());
+//        return AVERROR(ENOMEM);
+//    }
+//    q->cond = SDL_CreateCond();
+//    if (!q->cond) {
+//        av_log(NULL, AV_LOG_FATAL, "SDL_CreateCond(): %s\n", SDL_GetError());
+//        return AVERROR(ENOMEM);
+//    }
+//    q->abort_request = 1;
+//    return 0;
+//}
+////数据包队列清空
+//static void packet_queue_flush(PacketQueue *q)
+//{
+//    MyAVPacketList pkt1;
 
-    SDL_LockMutex(q->mutex);
-    while (av_fifo_read(q->pkt_list, &pkt1, 1) >= 0)
-        av_packet_free(&pkt1.pkt);
-    q->nb_packets = 0;
-    q->size = 0;
-    q->duration = 0;
-    q->serial++;
-    SDL_UnlockMutex(q->mutex);
-}
-//数据包队列销毁
-static void packet_queue_destroy(PacketQueue *q)
-{
-    packet_queue_flush(q);
-    av_fifo_freep2(&q->pkt_list);
-    SDL_DestroyMutex(q->mutex);
-    SDL_DestroyCond(q->cond);
-}
-//数据包队列停用
-static void packet_queue_abort(PacketQueue *q)
-{
-    SDL_LockMutex(q->mutex);
+//    SDL_LockMutex(q->mutex);
+//    while (av_fifo_read(q->pkt_list, &pkt1, 1) >= 0)
+//        av_packet_free(&pkt1.pkt);
+//    q->nb_packets = 0;
+//    q->size = 0;
+//    q->duration = 0;
+//    q->serial++;
+//    SDL_UnlockMutex(q->mutex);
+//}
+////数据包队列销毁
+//static void packet_queue_destroy(PacketQueue *q)
+//{
+//    packet_queue_flush(q);
+//    av_fifo_freep2(&q->pkt_list);
+//    SDL_DestroyMutex(q->mutex);
+//    SDL_DestroyCond(q->cond);
+//}
+////数据包队列停用
+//static void packet_queue_abort(PacketQueue *q)
+//{
+//    SDL_LockMutex(q->mutex);
 
-    q->abort_request = 1;
+//    q->abort_request = 1;
 
-    SDL_CondSignal(q->cond);
+//    SDL_CondSignal(q->cond);
 
-    SDL_UnlockMutex(q->mutex);
-}
-//数据包队列开始使用
-static void packet_queue_start(PacketQueue *q)
-{
-    SDL_LockMutex(q->mutex);
-    q->abort_request = 0;
-    q->serial++;
-    SDL_UnlockMutex(q->mutex);
-}
+//    SDL_UnlockMutex(q->mutex);
+//}
+////数据包队列开始使用
+//static void packet_queue_start(PacketQueue *q)
+//{
+//    SDL_LockMutex(q->mutex);
+//    q->abort_request = 0;
+//    q->serial++;
+//    SDL_UnlockMutex(q->mutex);
+//}
 
-/* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
-//从数据包队列中获取数据包
-static int packet_queue_get(PacketQueue* q, AVPacket* pkt, int block, int* serial)
-{
-    MyAVPacketList pkt1;
-    int ret;
+///* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
+////从数据包队列中获取数据包
+//static int packet_queue_get(PacketQueue* q, AVPacket* pkt, int block, int* serial)
+//{
+//    MyAVPacketList pkt1;
+//    int ret;
 
-    SDL_LockMutex(q->mutex);
+//    SDL_LockMutex(q->mutex);
 
-    for (;;) {
-        if (q->abort_request) {
-            ret = -1;
-            break;
-        }
+//    for (;;) {
+//        if (q->abort_request) {
+//            ret = -1;
+//            break;
+//        }
 
-        if (av_fifo_read(q->pkt_list, &pkt1, 1) >= 0) {
-            q->nb_packets--;
-            q->size -= pkt1.pkt->size + sizeof(pkt1);
-            q->duration -= pkt1.pkt->duration;
-            av_packet_move_ref(pkt, pkt1.pkt);
-            if (serial)
-                *serial = pkt1.serial;
-            av_packet_free(&pkt1.pkt);
-            ret = 1;
-            break;
-        }
-        else if (!block) {
-            ret = 0;
-            break;
-        }
-        else {
-            SDL_CondWait(q->cond, q->mutex);
-        }
-    }
-    SDL_UnlockMutex(q->mutex);
-    return ret;
-}
-
-
+//        if (av_fifo_read(q->pkt_list, &pkt1, 1) >= 0) {
+//            q->nb_packets--;
+//            q->size -= pkt1.pkt->size + sizeof(pkt1);
+//            q->duration -= pkt1.pkt->duration;
+//            av_packet_move_ref(pkt, pkt1.pkt);
+//            if (serial)
+//                *serial = pkt1.serial;
+//            av_packet_free(&pkt1.pkt);
+//            ret = 1;
+//            break;
+//        }
+//        else if (!block) {
+//            ret = 0;
+//            break;
+//        }
+//        else {
+//            SDL_CondWait(q->cond, q->mutex);
+//        }
+//    }
+//    SDL_UnlockMutex(q->mutex);
+//    return ret;
+//}
 
 
 
 
-//解码器初始化（绑定解码结构体、数据包队列、信号量，初始化pts）
-static int decoder_init(Decoder* d, AVCodecContext* avctx, PacketQueue* queue, SDL_cond* empty_queue_cond) {
-    memset(d, 0, sizeof(Decoder));
-    d->pkt = av_packet_alloc();
-    if (!d->pkt)
-        return AVERROR(ENOMEM);
-    d->avctx = avctx;
-    d->queue = queue;
-    d->empty_queue_cond = empty_queue_cond;
-    d->start_pts = AV_NOPTS_VALUE;
-    d->pkt_serial = -1;
-    return 0;
-}
 
 
-static int decoder_reorder_pts = -1;
+////解码器初始化（绑定解码结构体、数据包队列、信号量，初始化pts）
+//static int decoder_init(Decoder* d, AVCodecContext* avctx, PacketQueue* queue, SDL_cond* empty_queue_cond) {
+//    memset(d, 0, sizeof(Decoder));
+//    d->pkt = av_packet_alloc();
+//    if (!d->pkt)
+//        return AVERROR(ENOMEM);
+//    d->avctx = avctx;
+//    d->queue = queue;
+//    d->empty_queue_cond = empty_queue_cond;
+//    d->start_pts = AV_NOPTS_VALUE;
+//    d->pkt_serial = -1;
+//    return 0;
+//}
 
-//解码一帧数据
-static int decoder_decode_frame(Decoder *d, AVFrame *frame, AVSubtitle *sub) {
-    int ret = AVERROR(EAGAIN);
 
-    for (;;) {
-        if (d->queue->serial == d->pkt_serial) {
-            do {
-                if (d->queue->abort_request)
-                    return -1;
+//static int decoder_reorder_pts = -1;
 
-                switch (d->avctx->codec_type) {
-                case AVMEDIA_TYPE_VIDEO:
-                    ret = avcodec_receive_frame(d->avctx, frame);
-                    if (ret >= 0) {
-                        if (decoder_reorder_pts == -1) {
-                            frame->pts = frame->best_effort_timestamp;
-                        }
-                        else if (!decoder_reorder_pts) {
-                            frame->pts = frame->pkt_dts;
-                        }
-                    }
-                    break;
-                case AVMEDIA_TYPE_AUDIO:
-                    ret = avcodec_receive_frame(d->avctx, frame);
-                    if (ret >= 0) {
-                        AVRational tb = { 1, frame->sample_rate };
-                        if (frame->pts != AV_NOPTS_VALUE)
-                            frame->pts = av_rescale_q(frame->pts, d->avctx->pkt_timebase, tb);
-                        else if (d->next_pts != AV_NOPTS_VALUE)
-                            frame->pts = av_rescale_q(d->next_pts, d->next_pts_tb, tb);
-                        if (frame->pts != AV_NOPTS_VALUE) {
-                            d->next_pts = frame->pts + frame->nb_samples;
-                            d->next_pts_tb = tb;
-                        }
-                    }
-                    break;
-                }
-                if (ret == AVERROR_EOF) {
-                    d->finished = d->pkt_serial;
-                    avcodec_flush_buffers(d->avctx);
-                    return 0;
-                }
-                if (ret >= 0)
-                    return 1;
-            } while (ret != AVERROR(EAGAIN));
-        }
+////解码一帧数据
+//static int decoder_decode_frame(Decoder *d, AVFrame *frame, AVSubtitle *sub) {
+//    int ret = AVERROR(EAGAIN);
 
-        do {
-            if (d->queue->nb_packets == 0)
-                SDL_CondSignal(d->empty_queue_cond);
-            if (d->packet_pending) {
-                d->packet_pending = 0;
-            }
-            else {
-                int old_serial = d->pkt_serial;
-                if (packet_queue_get(d->queue, d->pkt, 1, &d->pkt_serial) < 0)
-                    return -1;
-                if (old_serial != d->pkt_serial) {
-                    avcodec_flush_buffers(d->avctx);
-                    d->finished = 0;
-                    d->next_pts = d->start_pts;
-                    d->next_pts_tb = d->start_pts_tb;
-                }
-            }
-            if (d->queue->serial == d->pkt_serial)
-                break;
-            av_packet_unref(d->pkt);
-        } while (1);
+//    for (;;) {
+//        if (d->queue->serial == d->pkt_serial) {
+//            do {
+//                if (d->queue->abort_request)
+//                    return -1;
 
-        if (d->avctx->codec_type == AVMEDIA_TYPE_SUBTITLE) {
-            int got_frame = 0;
-            ret = avcodec_decode_subtitle2(d->avctx, sub, &got_frame, d->pkt);
-            if (ret < 0) {
-                ret = AVERROR(EAGAIN);
-            }
-            else {
-                if (got_frame && !d->pkt->data) {
-                    d->packet_pending = 1;
-                }
-                ret = got_frame ? 0 : (d->pkt->data ? AVERROR(EAGAIN) : AVERROR_EOF);
-            }
-            av_packet_unref(d->pkt);
-        }
-        else {
-            if (avcodec_send_packet(d->avctx, d->pkt) == AVERROR(EAGAIN)) {
-                av_log(d->avctx, AV_LOG_ERROR, "Receive_frame and send_packet both returned EAGAIN, which is an API violation.\n");
-                d->packet_pending = 1;
-            }
-            else {
-                av_packet_unref(d->pkt);
-            }
-        }
-    }
-}
-//解码器销毁
-static void decoder_destroy(Decoder *d) {
-    av_packet_free(&d->pkt);
-    avcodec_free_context(&d->avctx);
-}
+//                switch (d->avctx->codec_type) {
+//                case AVMEDIA_TYPE_VIDEO:
+//                    ret = avcodec_receive_frame(d->avctx, frame);
+//                    if (ret >= 0) {
+//                        if (decoder_reorder_pts == -1) {
+//                            frame->pts = frame->best_effort_timestamp;
+//                        }
+//                        else if (!decoder_reorder_pts) {
+//                            frame->pts = frame->pkt_dts;
+//                        }
+//                    }
+//                    break;
+//                case AVMEDIA_TYPE_AUDIO:
+//                    ret = avcodec_receive_frame(d->avctx, frame);
+//                    if (ret >= 0) {
+//                        AVRational tb = { 1, frame->sample_rate };
+//                        if (frame->pts != AV_NOPTS_VALUE)
+//                            frame->pts = av_rescale_q(frame->pts, d->avctx->pkt_timebase, tb);
+//                        else if (d->next_pts != AV_NOPTS_VALUE)
+//                            frame->pts = av_rescale_q(d->next_pts, d->next_pts_tb, tb);
+//                        if (frame->pts != AV_NOPTS_VALUE) {
+//                            d->next_pts = frame->pts + frame->nb_samples;
+//                            d->next_pts_tb = tb;
+//                        }
+//                    }
+//                    break;
+//                }
+//                if (ret == AVERROR_EOF) {
+//                    d->finished = d->pkt_serial;
+//                    avcodec_flush_buffers(d->avctx);
+//                    return 0;
+//                }
+//                if (ret >= 0)
+//                    return 1;
+//            } while (ret != AVERROR(EAGAIN));
+//        }
 
-static void frame_queue_unref_item(Frame *vp)
-{
-    av_frame_unref(vp->frame);
-    avsubtitle_free(&vp->sub);
-}
-//帧队列初始化（绑定数据包队列，初始化最大值）
-static int frame_queue_init(FrameQueue *f, PacketQueue *pktq, int max_size, int keep_last)
-{
-    int i;
-    memset(f, 0, sizeof(FrameQueue));
-    if (!(f->mutex = SDL_CreateMutex())) {
-        av_log(NULL, AV_LOG_FATAL, "SDL_CreateMutex(): %s\n", SDL_GetError());
-        return AVERROR(ENOMEM);
-    }
-    if (!(f->cond = SDL_CreateCond())) {
-        av_log(NULL, AV_LOG_FATAL, "SDL_CreateCond(): %s\n", SDL_GetError());
-        return AVERROR(ENOMEM);
-    }
-    f->pktq = pktq;
-    f->max_size = FFMIN(max_size, FRAME_QUEUE_SIZE);
-    f->keep_last = !!keep_last;
-    for (i = 0; i < f->max_size; i++)
-        if (!(f->queue[i].frame = av_frame_alloc()))
-            return AVERROR(ENOMEM);
-    return 0;
-}
-//帧队列销毁
-static void frame_queue_destory(FrameQueue *f)
-{
-    int i;
-    for (i = 0; i < f->max_size; i++) {
-        Frame* vp = &f->queue[i];
-        frame_queue_unref_item(vp);
-        av_frame_free(&vp->frame);
-    }
-    SDL_DestroyMutex(f->mutex);
-    SDL_DestroyCond(f->cond);
-}
-//帧队列信号
-static void frame_queue_signal(FrameQueue *f)
-{
-    SDL_LockMutex(f->mutex);
-    SDL_CondSignal(f->cond);
-    SDL_UnlockMutex(f->mutex);
-}
+//        do {
+//            if (d->queue->nb_packets == 0)
+//                SDL_CondSignal(d->empty_queue_cond);
+//            if (d->packet_pending) {
+//                d->packet_pending = 0;
+//            }
+//            else {
+//                int old_serial = d->pkt_serial;
+//                if (packet_queue_get(d->queue, d->pkt, 1, &d->pkt_serial) < 0)
+//                    return -1;
+//                if (old_serial != d->pkt_serial) {
+//                    avcodec_flush_buffers(d->avctx);
+//                    d->finished = 0;
+//                    d->next_pts = d->start_pts;
+//                    d->next_pts_tb = d->start_pts_tb;
+//                }
+//            }
+//            if (d->queue->serial == d->pkt_serial)
+//                break;
+//            av_packet_unref(d->pkt);
+//        } while (1);
 
-static Frame* frame_queue_peek(FrameQueue* f)
-{
-    return &f->queue[(f->rindex + f->rindex_shown) % f->max_size];
-}
+//        if (d->avctx->codec_type == AVMEDIA_TYPE_SUBTITLE) {
+//            int got_frame = 0;
+//            ret = avcodec_decode_subtitle2(d->avctx, sub, &got_frame, d->pkt);
+//            if (ret < 0) {
+//                ret = AVERROR(EAGAIN);
+//            }
+//            else {
+//                if (got_frame && !d->pkt->data) {
+//                    d->packet_pending = 1;
+//                }
+//                ret = got_frame ? 0 : (d->pkt->data ? AVERROR(EAGAIN) : AVERROR_EOF);
+//            }
+//            av_packet_unref(d->pkt);
+//        }
+//        else {
+//            if (avcodec_send_packet(d->avctx, d->pkt) == AVERROR(EAGAIN)) {
+//                av_log(d->avctx, AV_LOG_ERROR, "Receive_frame and send_packet both returned EAGAIN, which is an API violation.\n");
+//                d->packet_pending = 1;
+//            }
+//            else {
+//                av_packet_unref(d->pkt);
+//            }
+//        }
+//    }
+//}
+////解码器销毁
+//static void decoder_destroy(Decoder *d) {
+//    av_packet_free(&d->pkt);
+//    avcodec_free_context(&d->avctx);
+//}
 
-static Frame* frame_queue_peek_next(FrameQueue* f)
-{
-    return &f->queue[(f->rindex + f->rindex_shown + 1) % f->max_size];
-}
+//static void frame_queue_unref_item(Frame *vp)
+//{
+//    av_frame_unref(vp->frame);
+//    avsubtitle_free(&vp->sub);
+//}
+////帧队列初始化（绑定数据包队列，初始化最大值）
+//static int frame_queue_init(FrameQueue *f, PacketQueue *pktq, int max_size, int keep_last)
+//{
+//    int i;
+//    memset(f, 0, sizeof(FrameQueue));
+//    if (!(f->mutex = SDL_CreateMutex())) {
+//        av_log(NULL, AV_LOG_FATAL, "SDL_CreateMutex(): %s\n", SDL_GetError());
+//        return AVERROR(ENOMEM);
+//    }
+//    if (!(f->cond = SDL_CreateCond())) {
+//        av_log(NULL, AV_LOG_FATAL, "SDL_CreateCond(): %s\n", SDL_GetError());
+//        return AVERROR(ENOMEM);
+//    }
+//    f->pktq = pktq;
+//    f->max_size = FFMIN(max_size, FRAME_QUEUE_SIZE);
+//    f->keep_last = !!keep_last;
+//    for (i = 0; i < f->max_size; i++)
+//        if (!(f->queue[i].frame = av_frame_alloc()))
+//            return AVERROR(ENOMEM);
+//    return 0;
+//}
+////帧队列销毁
+//static void frame_queue_destory(FrameQueue *f)
+//{
+//    int i;
+//    for (i = 0; i < f->max_size; i++) {
+//        Frame* vp = &f->queue[i];
+//        frame_queue_unref_item(vp);
+//        av_frame_free(&vp->frame);
+//    }
+//    SDL_DestroyMutex(f->mutex);
+//    SDL_DestroyCond(f->cond);
+//}
+////帧队列信号
+//static void frame_queue_signal(FrameQueue *f)
+//{
+//    SDL_LockMutex(f->mutex);
+//    SDL_CondSignal(f->cond);
+//    SDL_UnlockMutex(f->mutex);
+//}
 
-static Frame* frame_queue_peek_last(FrameQueue* f)
-{
-    return &f->queue[f->rindex];
-}
+//static Frame* frame_queue_peek(FrameQueue* f)
+//{
+//    return &f->queue[(f->rindex + f->rindex_shown) % f->max_size];
+//}
 
-static Frame* frame_queue_peek_writable(FrameQueue* f)
-{
-    /* wait until we have space to put a new frame */
-    SDL_LockMutex(f->mutex);
-    while (f->size >= f->max_size &&
-        !f->pktq->abort_request) {
-        SDL_CondWait(f->cond, f->mutex);
-    }
-    SDL_UnlockMutex(f->mutex);
+//static Frame* frame_queue_peek_next(FrameQueue* f)
+//{
+//    return &f->queue[(f->rindex + f->rindex_shown + 1) % f->max_size];
+//}
 
-    if (f->pktq->abort_request)
-        return NULL;
+//static Frame* frame_queue_peek_last(FrameQueue* f)
+//{
+//    return &f->queue[f->rindex];
+//}
 
-    return &f->queue[f->windex];
-}
+//static Frame* frame_queue_peek_writable(FrameQueue* f)
+//{
+//    /* wait until we have space to put a new frame */
+//    SDL_LockMutex(f->mutex);
+//    while (f->size >= f->max_size &&
+//        !f->pktq->abort_request) {
+//        SDL_CondWait(f->cond, f->mutex);
+//    }
+//    SDL_UnlockMutex(f->mutex);
 
-static Frame* frame_queue_peek_readable(FrameQueue* f)
-{
-    /* wait until we have a readable a new frame */
-    SDL_LockMutex(f->mutex);
-    while (f->size - f->rindex_shown <= 0 &&
-        !f->pktq->abort_request) {
-        SDL_CondWait(f->cond, f->mutex);
-    }
-    SDL_UnlockMutex(f->mutex);
+//    if (f->pktq->abort_request)
+//        return NULL;
 
-    if (f->pktq->abort_request)
-        return NULL;
+//    return &f->queue[f->windex];
+//}
 
-    return &f->queue[(f->rindex + f->rindex_shown) % f->max_size];
-}
+//static Frame* frame_queue_peek_readable(FrameQueue* f)
+//{
+//    /* wait until we have a readable a new frame */
+//    SDL_LockMutex(f->mutex);
+//    while (f->size - f->rindex_shown <= 0 &&
+//        !f->pktq->abort_request) {
+//        SDL_CondWait(f->cond, f->mutex);
+//    }
+//    SDL_UnlockMutex(f->mutex);
 
-static void frame_queue_push(FrameQueue* f)
-{
-    if (++f->windex == f->max_size)
-        f->windex = 0;
-    SDL_LockMutex(f->mutex);
-    f->size++;
-    SDL_CondSignal(f->cond);
-    SDL_UnlockMutex(f->mutex);
-}
+//    if (f->pktq->abort_request)
+//        return NULL;
 
-static void frame_queue_next(FrameQueue* f)
-{
-    if (f->keep_last && !f->rindex_shown) {
-        f->rindex_shown = 1;
-        return;
-    }
-    frame_queue_unref_item(&f->queue[f->rindex]);
-    if (++f->rindex == f->max_size)
-        f->rindex = 0;
-    SDL_LockMutex(f->mutex);
-    f->size--;
-    SDL_CondSignal(f->cond);
-    SDL_UnlockMutex(f->mutex);
-}
+//    return &f->queue[(f->rindex + f->rindex_shown) % f->max_size];
+//}
 
-/* return the number of undisplayed frames in the queue */
-static int frame_queue_nb_remaining(FrameQueue* f)
-{
-    return f->size - f->rindex_shown;
-}
+//static void frame_queue_push(FrameQueue* f)
+//{
+//    if (++f->windex == f->max_size)
+//        f->windex = 0;
+//    SDL_LockMutex(f->mutex);
+//    f->size++;
+//    SDL_CondSignal(f->cond);
+//    SDL_UnlockMutex(f->mutex);
+//}
 
-/* return last shown position */
-static int64_t frame_queue_last_pos(FrameQueue* f)
-{
-    Frame* fp = &f->queue[f->rindex];
-    if (f->rindex_shown && fp->serial == f->pktq->serial)
-        return fp->pos;
-    else
-        return -1;
-}
+//static void frame_queue_next(FrameQueue* f)
+//{
+//    if (f->keep_last && !f->rindex_shown) {
+//        f->rindex_shown = 1;
+//        return;
+//    }
+//    frame_queue_unref_item(&f->queue[f->rindex]);
+//    if (++f->rindex == f->max_size)
+//        f->rindex = 0;
+//    SDL_LockMutex(f->mutex);
+//    f->size--;
+//    SDL_CondSignal(f->cond);
+//    SDL_UnlockMutex(f->mutex);
+//}
 
-static void decoder_abort(Decoder* d, FrameQueue* fq)
-{
-    packet_queue_abort(d->queue);
-    frame_queue_signal(fq);
-    d->decode_thread.join();
-    packet_queue_flush(d->queue);
-}
+///* return the number of undisplayed frames in the queue */
+//static int frame_queue_nb_remaining(FrameQueue* f)
+//{
+//    return f->size - f->rindex_shown;
+//}
+
+///* return last shown position */
+//static int64_t frame_queue_last_pos(FrameQueue* f)
+//{
+//    Frame* fp = &f->queue[f->rindex];
+//    if (f->rindex_shown && fp->serial == f->pktq->serial)
+//        return fp->pos;
+//    else
+//        return -1;
+//}
+
+//static void decoder_abort(Decoder* d, FrameQueue* fq)
+//{
+//    packet_queue_abort(d->queue);
+//    frame_queue_signal(fq);
+//    d->decode_thread.join();
+//    packet_queue_flush(d->queue);
+//}

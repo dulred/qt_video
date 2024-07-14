@@ -30,15 +30,15 @@ public:
 
     static VideoCtl* GetInstance();
     ~VideoCtl();
-	/**
-	* @brief	开始播放
-	*
-	* @param	strFileName 文件完整路径
-	* @param	widPlayWid 播放窗口id
-	* @return	true 成功 false 失败
-	* @note
-	*/
-	bool StartPlay(QString strFileName, WId widPlayWid);
+    /**
+    * @brief	开始播放
+    *
+    * @param	strFileName 文件完整路径
+    * @param	widPlayWid 播放窗口id
+    * @return	true 成功 false 失败
+    * @note
+    */
+    bool StartPlay(QString strFileName, WId widPlayWid);
 
 
     int audio_decode_frame(VideoState *is);
@@ -72,20 +72,20 @@ public:
 
 private:
     explicit VideoCtl(QObject *parent = nullptr);
-	/**
-	 * @brief	初始化
-	 * 
-	 * @return	true 成功 false 失败
-	 * @note 	
-	 */
+    /**
+     * @brief	初始化
+     *
+     * @return	true 成功 false 失败
+     * @note
+     */
     bool Init();
 
-	/**
-	 * @brief	连接信号槽
-	 * 
-	 * @return	true 成功 false 失败
-	 * @note 	
-	 */
+    /**
+     * @brief	连接信号槽
+     *
+     * @return	true 成功 false 失败
+     * @note
+     */
     bool ConnectSignalSlots();
 
     int get_video_frame(VideoState *is, AVFrame *frame);
@@ -126,7 +126,7 @@ private:
     void set_clock(Clock *c, double pts, int serial);
     void set_clock_speed(Clock *c, double speed);
     void init_clock(Clock *c, int *queue_serial);
-    
+
     int get_master_sync_type(VideoState *is);
     double get_master_clock(VideoState *is);
     void check_external_clock_speed(VideoState *is);

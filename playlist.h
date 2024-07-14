@@ -16,7 +16,6 @@
 #include <QDropEvent>
 #include <QDragEnterEvent>
 #include <QMimeData>
-
 namespace Ui {
 class Playlist;
 }

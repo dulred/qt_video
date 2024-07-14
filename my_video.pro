@@ -62,7 +62,7 @@ SOURCES += \
     about.cpp \
     playlist.cpp \
 #    ctrlbar.cpp \
-#    show.cpp \
+    show.cpp \
 #    videoctl.cpp \
 #    CustomSlider.cpp \
     medialist.cpp \
@@ -74,11 +74,11 @@ HEADERS += \
     about.h \
     playlist.h \
 #    ctrlbar.h \
-#    show.h \
+    show.h \
 #    videoctl.h \
 #    CustomSlider.h \
     medialist.h \
-#    datactl.h \
+    datactl.h \
 
 FORMS += \
     mainwindow.ui \

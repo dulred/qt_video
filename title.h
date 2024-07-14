@@ -76,6 +76,7 @@ private:
 
 
     About about;
+
 };
 
 #endif // MAINWIDTITLE_H

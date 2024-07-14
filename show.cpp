@@ -17,7 +17,7 @@
 #include "ui_show.h"
 
 #include "globalhelper.h"
-
+#include "datactl.h"
 #pragma execution_character_set("utf-8")
 
 QMutex g_show_rect_mutex;
@@ -28,6 +28,7 @@ Show::Show(QWidget *parent) :
     m_stMenu(this),
     m_stActionGroup(this)
 {
+
     ui->setupUi(this);
 
     //加载样式
@@ -42,9 +43,8 @@ Show::Show(QWidget *parent) :
     ui->label->setUpdatesEnabled(false);
 
     this->setMouseTracking(true);
-    
-
-
+//    ui->label->setAttribute(Qt::WA_TransparentForMouseEvents);
+//    ui->label->setMouseTracking(true);
     m_nLastFrameWidth = 0; ///< 记录视频宽高
     m_nLastFrameHeight = 0;
 
@@ -54,7 +54,7 @@ Show::Show(QWidget *parent) :
 
     m_stMenu.addActions(m_stActionGroup.actions());
 
-    
+
 }
 
 Show::~Show()
@@ -69,9 +69,9 @@ bool Show::Init()
         return false;
     }
 
+//    m_stMenu.exec(pos());
+
 	//ui->label->setUpdatesEnabled(false);
-
-
 
 
 	return true;
@@ -189,7 +189,7 @@ void Show::OnDisplayMsg(QString strMsg)
 
 void Show::OnPlay(QString strFile)
 {
-    VideoCtl::GetInstance()->StartPlay(strFile, ui->label->winId());
+//    VideoCtl::GetInstance()->StartPlay(strFile, ui->label->winId());
 }
 
 void Show::OnStopFinished()
@@ -200,7 +200,7 @@ void Show::OnStopFinished()
 
 void Show::OnTimerShowCursorUpdate()
 {
-    //qDebug() << "Show::OnTimerShowCursorUpdate()";
+    qDebug() << "Show::OnTimerShowCursorUpdate()";
     //setCursor(Qt::BlankCursor);
 }
 
@@ -210,14 +210,17 @@ void Show::OnActionsTriggered(QAction *action)
     if (strAction == "全屏")
     {
         emit SigFullScreen();
+        qDebug()<< "全屏";
     }
     else if (strAction == "停止")
     {
         emit SigStop();
+        qDebug()<< "停止";
     }
     else if (strAction == "暂停" || strAction == "播放")
     {
         emit SigPlayOrPause();
+         qDebug()<< "暂停";
     }
 }
 
